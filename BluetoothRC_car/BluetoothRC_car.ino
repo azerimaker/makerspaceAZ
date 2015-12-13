@@ -17,17 +17,18 @@
 
 // variables and constants
 char BT_RECEIVED;  
-volatile unsigned char SPEED_MIX = 0;
-volatile unsigned char SET_SPEED = 100; // default 100
-boolean FORWARD = false;
+volatile unsigned char SPEED_MIX = 0;	// reduced speed for turning
+volatile unsigned char SET_SPEED = 100;	// Initial speed
+boolean FORWARD = false;				// Motor rotation directions
 boolean BACKWARD = true;
   
 // function prototypes
-char BT_read(void);
-void driveRobot(char COMMAND);
+char BT_read(void);						
+void driveRobot(char COMMAND);							
 void setSpeedRight(unsigned char SPEED, boolean DIR);
 void setSpeedLeft(unsigned char SPEED, boolean DIR);
-void brakeMotor(void);
+void brakeMotor(void);		
+
 // define software serial port
 SoftwareSerial BTserial(Rx, Tx);
              
@@ -41,7 +42,7 @@ void setup()
   pinMode(motor2A, OUTPUT);
   pinMode(motor2B, OUTPUT);
   
-  brakeMotor(); // set pins to 0
+  brakeMotor(); // set all pins to 0
   
   Serial.begin(9600);
   delay(50);
@@ -57,103 +58,103 @@ void loop(){
 
    if(BTserial.available()>0){
 
-      BT_RECEIVED = BT_read(); // read BT data
+      	BT_RECEIVED = BT_read(); // read BT data byte
         
-      Serial.println(BT_RECEIVED);
+      	Serial.println(BT_RECEIVED);
         
-      driveRobot(BT_RECEIVED);
+      	driveRobot(BT_RECEIVED);	// send BT data to run Motors
     
        // Read user input if available.
-       if (Serial.available())
-       {
-           delay(10);
-           BTserial.write(Serial.read());
-       }
+	   if (Serial.available()){
+	       delay(10);
+	       BTserial.write(Serial.read());
+	   }
     }
     delay(10);
 }
 
-
+// function to read BT data
 char BT_read(void)
 {
     char c = (char)BTserial.read();
     return c;
 }
 
-
-void driveRobot(char COMMAND){
+// Function to control motor speeds and directions
+void driveRobot(char COMMAND)
+{
   
-  SPEED_MIX = map(SET_SPEED, 0, 255, 0, 127);
+  SPEED_MIX = map(SET_SPEED, 0, 255, 0, 127); // set different rotation speed for turning
   
   switch(COMMAND){
-        case '0':  
-            SET_SPEED = 0;
-                break;
-        case '1': 
-            SET_SPEED = 25;
-                break;
-        case '2': 
-            SET_SPEED = 50;
-                break;
-        case '3': 
-            SET_SPEED = 75;
-                break;
-        case '4': 
-            SET_SPEED = 100;
-                break;
-        case '5': 
-            SET_SPEED = 125;
-                break;
-        case '6': 
-            SET_SPEED = 150;
-                break;
-        case '7': 
-            SET_SPEED = 175;
-                break;
-        case '8': 
-            SET_SPEED = 200;
-                break;
-        case '9': 
-            SET_SPEED = 225;
-                break;
-        case 'q': 
-            SET_SPEED = 255;
-                break;
-        case 'F': // Forward
-            setSpeedRight(SET_SPEED, FORWARD);
-            setSpeedLeft( SET_SPEED, FORWARD);
+    case '0':  
+        SET_SPEED = 0;
             break;
-        case 'B': // Backward
-            setSpeedRight(SET_SPEED, BACKWARD);
-            setSpeedLeft( SET_SPEED, BACKWARD);
+    case '1': 
+        SET_SPEED = 25;
             break;
-        case 'R': // Right
-            setSpeedRight(SET_SPEED, BACKWARD);
-            setSpeedLeft( SET_SPEED, FORWARD);
+    case '2': 
+        SET_SPEED = 50;
             break;
-        case 'L': // Left
-            setSpeedRight(SET_SPEED, FORWARD);
-            setSpeedLeft( SET_SPEED, BACKWARD);
+    case '3': 
+        SET_SPEED = 75;
             break;
-        case 'I': // Right + Forward
-            setSpeedRight(SPEED_MIX, FORWARD);
-            setSpeedLeft( SET_SPEED, FORWARD);
+    case '4': 
+        SET_SPEED = 100;
             break;
-        case 'G': // Left + Forward
-            setSpeedRight(SET_SPEED, FORWARD);
-            setSpeedLeft( SPEED_MIX, FORWARD);
+    case '5': 
+        SET_SPEED = 125;
             break;
-        case 'J': // Right + Backward
-            setSpeedRight(SPEED_MIX, BACKWARD);
-            setSpeedLeft( SET_SPEED, BACKWARD);
-            break;  
-        case 'H': // Left + Backward 
-            setSpeedRight(SET_SPEED, BACKWARD);
-            setSpeedLeft( SPEED_MIX, BACKWARD);
-            break;  
-        default: 
-            brakeMotor();
+    case '6': 
+        SET_SPEED = 150;
             break;
+    case '7': 
+        SET_SPEED = 175;
+            break;
+    case '8': 
+        SET_SPEED = 200;
+            break;
+    case '9': 
+        SET_SPEED = 225;
+            break;
+    case 'q': // Maks speed
+        SET_SPEED = 255;
+            break;
+    case 'F': // Forward
+        setSpeedRight(SET_SPEED, FORWARD);
+        setSpeedLeft( SET_SPEED, FORWARD);
+        break;
+    case 'B': // Backward
+        setSpeedRight(SET_SPEED, BACKWARD);
+        setSpeedLeft( SET_SPEED, BACKWARD);
+        break;
+    case 'R': // Right
+        setSpeedRight(SET_SPEED, BACKWARD);
+        setSpeedLeft( SET_SPEED, FORWARD);
+        break;
+    case 'L': // Left
+        setSpeedRight(SET_SPEED, FORWARD);
+        setSpeedLeft( SET_SPEED, BACKWARD);
+        break;
+    case 'I': // Right + Forward
+        setSpeedRight(SPEED_MIX, FORWARD);
+        setSpeedLeft( SET_SPEED, FORWARD);
+        break;
+    case 'G': // Left + Forward
+        setSpeedRight(SET_SPEED, FORWARD);
+        setSpeedLeft( SPEED_MIX, FORWARD);
+        break;
+    case 'J': // Right + Backward
+        setSpeedRight(SPEED_MIX, BACKWARD);
+        setSpeedLeft( SET_SPEED, BACKWARD);
+        break;  
+    case 'H': // Left + Backward 
+        setSpeedRight(SET_SPEED, BACKWARD);
+        setSpeedLeft( SPEED_MIX, BACKWARD);
+        break;  
+    default: 
+        brakeMotor();
+        break;
     }
 }
 
@@ -161,14 +162,12 @@ void setSpeedRight(unsigned char SPEED, boolean DIR)
 {
   if(DIR == true){
       digitalWrite(motor2A, LOW);
-      analogWrite( motor2B, SPEED);
+      analogWrite( motor2B, SPEED); // PWM
       
-  }
-  else{
-      analogWrite( motor2A, SPEED);
+  }else{
+      analogWrite( motor2A, SPEED); // PWM
       digitalWrite(motor2B, LOW);
   }
-  
 }
 
 void setSpeedLeft(unsigned char SPEED, boolean DIR)
@@ -176,16 +175,14 @@ void setSpeedLeft(unsigned char SPEED, boolean DIR)
   if(DIR == true){
       digitalWrite(motor1A, LOW);
       analogWrite( motor1B, SPEED);
-  }
-  else{
+  }else{
       analogWrite( motor1A, SPEED);
       digitalWrite(motor1B, LOW);
       
   }
-  
 }
 
-
+// function to stop the car
 void brakeMotor(void){
     digitalWrite(motor1A, LOW);
     digitalWrite(motor1B, LOW);
@@ -193,12 +190,5 @@ void brakeMotor(void){
     digitalWrite(motor2B, LOW);
 }
 
-/*
-while(BTserial.available()){ // While there is more to be read, keep reading.
-         command += (char)BTserial.read();
- }
- Serial.println(command);
- command = ""; // reset the string
- */
 
 
