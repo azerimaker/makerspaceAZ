@@ -1,3 +1,3 @@
 # makerspaceAZ
-[Makerspace Azerbaijan](makerspace-az.org/az) Projects repository
+[Makerspace Azerbaijan](http://makerspace-az.org/az/) Projects repository
 
