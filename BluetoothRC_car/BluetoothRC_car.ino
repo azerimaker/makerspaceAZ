@@ -208,12 +208,4 @@ void brakeMotor(void){
     digitalWrite(motor2B, LOW);
 }
 
-/*
-while(BTserial.available()){ // While there is more to be read, keep reading.
-         command += (char)BTserial.read();
- }
- Serial.println(command);
- command = ""; // reset the string
- */
-
 
