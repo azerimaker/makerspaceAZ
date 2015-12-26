@@ -3,8 +3,8 @@
  * Arduino Sketch: 4X4 Robot mashin kontroller
  * Kommunikasiya: Bluetooth (BT)
  * Android App: Bluetooth RC
- * last modified: 24 December 2015
- * by (azerimaker)
+ * son modifikasiya: 26 Dekabr 2015
+ * (azerimaker)
 */
 
 #include <SoftwareSerial.h>
@@ -33,7 +33,6 @@ SoftwareSerial BTserial(Rx, Tx);
 // bu funksiya cemi bir defe program ishe dushende icra olunur                                   
 void setup() 
 {
-
   pinMode(Rx, INPUT);  // pinleri girish/cixish kimi teyin et
   pinMode(Tx, OUTPUT);
   pinMode(motor1A, OUTPUT);
@@ -82,7 +81,7 @@ void loop()
     delay(10);
 }
 
-
+// robot idare etme funksiyasi
 void driveRobot(char COMMAND)
 {  
 	// cuzi donmeler aparmaq ucun esas suret deyishenini
