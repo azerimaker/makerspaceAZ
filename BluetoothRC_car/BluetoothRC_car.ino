@@ -3,8 +3,8 @@
  * Arduino Sketch: 4X4 Robot mashin kontroller
  * Kommunikasiya: Bluetooth (BT)
  * Android App: Bluetooth RC
- * son modifikasiya: 26 Dekabr 2015
- * (azerimaker)
+ * last modified: 24 December 2015
+ * by (azerimaker)
 */
 
 #include <SoftwareSerial.h>
@@ -21,8 +21,8 @@
 char BT_RECEIVED;   // BT-dan gelen simvol
 char PC_RECEIVED;   // PC-den gelen simvol
  
-volatile unsigned char SPEED_MIX = 0;
-volatile unsigned char SET_SPEED = 100; // bashlangic suret 100 
+unsigned char SPEED_MIX = 0;
+unsigned char SET_SPEED = 100; // bashlangic suret 100 
 
 boolean FORWARD = false; // ireli
 boolean BACKWARD = true; // geri
@@ -33,6 +33,7 @@ SoftwareSerial BTserial(Rx, Tx);
 // bu funksiya cemi bir defe program ishe dushende icra olunur                                   
 void setup() 
 {
+
   pinMode(Rx, INPUT);  // pinleri girish/cixish kimi teyin et
   pinMode(Tx, OUTPUT);
   pinMode(motor1A, OUTPUT);
@@ -62,30 +63,30 @@ void setup()
 // Bu funksiya sonsuz olaraq tekrarlanir. 
 void loop()
 {
-	if(Serial.available())
-	  {
-	      PC_RECEIVED = (char)Serial.read();  // PC-ni oxu
-	      BTserial.write(PC_RECEIVED);        // BT moduluna gonder
-	  }
+  if(Serial.available())
+    {
+        PC_RECEIVED = (char)Serial.read();  // PC-ni oxu
+        BTserial.write(PC_RECEIVED);        // BT moduluna gonder
+    }
 
-	if(BTserial.available())
-	  {
-	     while(BTserial.available())
-	     {
-	        BT_RECEIVED = (char)BTserial.read();   // BT-u oxu
-	        Serial.write(BT_RECEIVED);             // PC-e gonder
-	        driveRobot(BT_RECEIVED);   // Simvolu hemcinin Robotu idare funksiyasina gonder
-	     }
-	  }
+  if(BTserial.available())
+    {
+       while(BTserial.available())
+       {
+          BT_RECEIVED = (char)BTserial.read();   // BT-u oxu
+          Serial.write(BT_RECEIVED);             // PC-e gonder
+          driveRobot(BT_RECEIVED);   // Simvolu hemcinin Robotu idare funksiyasina gonder
+       }
+    }
 
     delay(10);
 }
 
-// robot idare etme funksiyasi
+
 void driveRobot(char COMMAND)
 {  
-	// cuzi donmeler aparmaq ucun esas suret deyishenini
-  	// texminen 2 defe azalt ve uygun tekerin yeni suretini teyin et
+  // cuzi donmeler aparmaq ucun esas suret deyishenini
+    // texminen 2 defe azalt ve uygun tekerin yeni suretini teyin et
   SPEED_MIX = map(SET_SPEED, 0, 255, 0, 127); 
   // COMMAND deyishenine uyghun addim at
   switch(COMMAND){
@@ -158,8 +159,8 @@ void driveRobot(char COMMAND)
               Serial.println("BT elaqesi kesildi");
               break;
         default: 
-            brakeMotor(); // istenilen bashqa simvol olduqda tekerleri tormozla
-            break;
+              brakeMotor(); // istenilen bashqa simvol olduqda tekerleri tormozla
+              break;
     }
 }
 
