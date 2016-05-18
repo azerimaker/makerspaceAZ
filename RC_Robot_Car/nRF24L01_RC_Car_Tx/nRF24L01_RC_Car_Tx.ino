@@ -2,7 +2,7 @@
  * www.Makerspace-Az.org
  * Arduino Sketch: 4X4 Robot masin, Radio Transmitter (Tx)
  * Kommunikasiya: nRF24L01 2.4GHz
- * son modifikasia tarixi: 14 May 2016
+ * son modifikasia tarixi: 16 May 2016
  * [azerimaker]
 */
 
