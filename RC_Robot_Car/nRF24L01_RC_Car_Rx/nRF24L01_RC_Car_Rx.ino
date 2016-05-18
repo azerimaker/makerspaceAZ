@@ -2,7 +2,7 @@
  * www.Makerspace-Az.org
  * Arduino Sketch: 4X4 Robot masin, Radio Receiver Robot Control (Rx)
  * Kommunikasiya: nRF24L01 2.4GHz
- * modifikasia olunub: 12 Aprel 2016
+ * son modifikasia tarixi: 14 May 2016
  * [azerimaker]
 */
 
@@ -10,6 +10,9 @@
 #include <SPI.h>
 #include <RF24.h>
 /*-----(  Sabitler ve Pin Nomreleri )-----*/
+#define MAX_SPEED 255 // analogWrite maks qiymeti
+#define MAX_FAILSAFE_COUNT 6
+
 #define CE_PIN   8  // nRF24L01 modulu uchun
 #define CSN_PIN 10
 
@@ -35,7 +38,8 @@ void setSpeedLeft(unsigned char SPEED, boolean DIR);
 void motorTormozla(void);
 
 /*-----( Deyishenler )-----*/
-byte address[6] = {"1Node"}; //  "Pipe" adi
+byte address[6] = {"1Node"}; //  nRF ucun "Pipe" adi
+int failsafe_count = 0;
 
 struct dataStruct {
   int Xposition;          // Joystick qiymetleri
@@ -48,8 +52,8 @@ unsigned char Joystick_Speed = 0;   // surete cevirmek
 int X_map, Y_map;
 unsigned int X_sq, Y_sq;     // suret vektorunun hesablamaq uchun
 
-boolean FORWARD = false; // ireli
-boolean BACKWARD = true; // geri
+boolean FORWARD = true; // ireli
+boolean BACKWARD = false; // geri
 
 /****** SETUP: Bir defe icra olunacaq ******/                       
 void setup() 
@@ -71,7 +75,7 @@ void setup()
   radio.openReadingPipe(1, address); // Qebul Pipe (kanali) ishe sal
   
   radio.startListening(); // Radio siqnallari dinlemeye bashla
-//  radio.printDetails(); //kommenti sileniz coxlu Debug informasiyasi print olunacaq
+  radio.printDetails(); //kommenti sileniz coxlu Debug informasiyasi print olunacaq
 } /****** SETUP sonu ******/
 
 
@@ -79,41 +83,45 @@ void setup()
 void loop()
 {
 
-   if ( radio.available()) 
-  {
+   if ( radio.available()){
 
     while (radio.available())   // Qebul Pipe-da melumat olarsa
     {
       radio.read( &myData, sizeof(myData) ); // melumati oxu
     }
 
-    
   //  Serial.print("Data qebul olundu: ");  // Qebul olunmus melumati goster
     Serial.print(myData.Xposition);     // 0-1023 aralighinda,  sabit olduqda 495
     Serial.print(", ");
     Serial.print(myData.Yposition);     // 0-1023 aralighinda, sabit olduqda 501
-    if ( myData.switchOn == 1)
-    {
+    if ( myData.switchOn == 1){
       Serial.println(", Achar ON");
-    }
-    else
+    }else
     {
-    //  Serial.println(", Achar OFF");
+      Serial.println(", Achar OFF");
     }
 
     // Yeni qebul olunmush melumati robotun hereket sxemine uyghunlashdir
     calcDirection(myData.Xposition, myData.Yposition); // S,F,B,L,R,I,G,H,J
     calcSpeed(myData.Xposition, myData.Yposition);  // 0-255
-   
+  
     Serial.print(" ");
     Serial.print(Joystick_Dir);
     Serial.print(" ");
     Serial.println(Joystick_Speed);
-    
+   
     driveRobot(Joystick_Dir, Joystick_Speed); 
 
-  } //  radio.available shertinin sonu
-
+  }else{
+    failsafe_count++;  // radioelaqe bir muddet iterse motoru saxla
+    Serial.println(failsafe_count);
+    
+    if(failsafe_count==MAX_FAILSAFE_COUNT){
+        failsafe_count = 0;
+        motorTormozla();
+      }	
+  }//  radio.available shertinin sonu
+  delay(100);
 }
 
  /*
@@ -187,7 +195,7 @@ inline void calcSpeed(int X_pos, int Y_pos){
 void driveRobot(char DIRECTION, unsigned char SPEED)
 { 
   
-  byte SET_SPEED = map(SPEED, 0,100, 0, 255);// SPEED 0-100, intervali deyish 0-255
+  byte SET_SPEED = map(SPEED, 0,100, 0, MAX_SPEED);// SPEED 0-100, intervali deyish 0-255
   byte SPEED_MIX = SET_SPEED/2;
 
   
@@ -201,12 +209,12 @@ void driveRobot(char DIRECTION, unsigned char SPEED)
           setSpeedLeft( SET_SPEED, BACKWARD);
           break;
       case 'R': // Right
-          setSpeedRight(SET_SPEED, BACKWARD);
-          setSpeedLeft( SET_SPEED, FORWARD);
+          setSpeedRight(SPEED_MIX, FORWARD);
+          setSpeedLeft( SPEED_MIX, BACKWARD);
           break;
       case 'L': // Left
-          setSpeedRight(SET_SPEED, FORWARD);
-          setSpeedLeft( SET_SPEED, BACKWARD);
+          setSpeedRight(SPEED_MIX, BACKWARD);
+          setSpeedLeft( SPEED_MIX, FORWARD);
           break;
       case 'I': // Right + Forward
           setSpeedRight(SPEED_MIX, FORWARD);

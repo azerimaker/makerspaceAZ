@@ -2,7 +2,7 @@
  * www.Makerspace-Az.org
  * Arduino Sketch: 4X4 Robot masin, Radio Transmitter (Tx)
  * Kommunikasiya: nRF24L01 2.4GHz
- * modifikasia olunub: 12 Aprel 2016
+ * son modifikasia tarixi: 14 May 2016
  * [azerimaker]
 */
 
@@ -26,8 +26,8 @@ byte address[6] = {"1Node"}; //  "Pipe" adi, nrf24l01 uchun
 // Proqramla Analoq qiymetleri filterleme uchun deyishenler
 int X_qiymeti = 0;
 int Y_qiymeti = 0;        
-float X_exp_emsal = 0.6;      //exponensial emsal qiymeti, 1-olduqda filtirleme deaktiv olur
-float Y_exp_emsal = 0.6;      // bu emsali isteyinizw gore deyishe bilersiniz (0-1] aralighinda
+float X_exp_emsal = 0.8;      //exponensial emsal qiymeti, 1-olduqda filtirleme deaktiv olur
+float Y_exp_emsal = 0.8;      // bu emsali isteyinizw gore deyishe bilersiniz (0-1] aralighinda
 int X_exp_cem = 0;            //exponensial cemin bashlangic qiymeti
 int Y_exp_cem = 0;     
 
@@ -97,7 +97,7 @@ void loop()
     //Serial.println("Gonderilme ugursuz oldu");
   }
   
-  delay(100); // Delay olmasi stabilliyi artirir. 
+  delay(50); // Delay olmasi stabilliyi artirir. 
   
 
 } /****** LOOP sonu ******/
