@@ -218,20 +218,20 @@ void driveRobot(char DIRECTION, unsigned char SPEED)
           setSpeedLeft( SPEED_MIX, FORWARD);
           break;
       case 'I': // Right + Forward
-          setSpeedRight(SPEED_MIX, FORWARD);
-          setSpeedLeft( SET_SPEED, FORWARD);
-            break;
-      case 'G': // Left + Forward
           setSpeedRight(SET_SPEED, FORWARD);
           setSpeedLeft( SPEED_MIX, FORWARD);
+            break;
+      case 'G': // Left + Forward
+          setSpeedRight(SPEED_MIX, FORWARD);
+          setSpeedLeft( SET_SPEED, FORWARD);
           break;
       case 'J': // Right + Backward
-          setSpeedRight(SPEED_MIX, BACKWARD);
-          setSpeedLeft( SET_SPEED, BACKWARD);
-          break;  
-      case 'H': // Left + Backward 
           setSpeedRight(SET_SPEED, BACKWARD);
           setSpeedLeft( SPEED_MIX, BACKWARD);
+          break;  
+      case 'H': // Left + Backward 
+          setSpeedRight(SPEED_MIX, BACKWARD);
+          setSpeedLeft( SET_SPEED, BACKWARD);
           break; 
       default: 
             motorTormozla(); // istenilen bashqa simvol olduqda tekerleri tormozla
