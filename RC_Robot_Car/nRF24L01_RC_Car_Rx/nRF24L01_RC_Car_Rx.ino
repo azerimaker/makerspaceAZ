@@ -84,6 +84,7 @@ void loop()
 {
 
    if ( radio.available()){
+    failsafe_count = 0;
 
     while (radio.available())   // Qebul Pipe-da melumat olarsa
     {
@@ -91,9 +92,9 @@ void loop()
     }
 
   //  Serial.print("Data qebul olundu: ");  // Qebul olunmus melumati goster
-    Serial.print(myData.Xposition);     // 0-1023 aralighinda,  sabit olduqda 495
-    Serial.print(", ");
-    Serial.print(myData.Yposition);     // 0-1023 aralighinda, sabit olduqda 501
+    //Serial.print(myData.Xposition);     // 0-1023 aralighinda,  sabit olduqda 495
+    //Serial.print(", ");
+    //Serial.print(myData.Yposition);     // 0-1023 aralighinda, sabit olduqda 501
     if ( myData.switchOn == 1){
       Serial.println(", Achar ON");
     }else
@@ -105,16 +106,16 @@ void loop()
     calcDirection(myData.Xposition, myData.Yposition); // S,F,B,L,R,I,G,H,J
     calcSpeed(myData.Xposition, myData.Yposition);  // 0-255
   
-    Serial.print(" ");
-    Serial.print(Joystick_Dir);
-    Serial.print(" ");
-    Serial.println(Joystick_Speed);
+    //Serial.print(" ");
+    //Serial.print(Joystick_Dir);
+    //Serial.print(" ");
+    //Serial.println(Joystick_Speed);
    
     driveRobot(Joystick_Dir, Joystick_Speed); 
 
   }else{
     failsafe_count++;  // radioelaqe bir muddet iterse motoru saxla
-    Serial.println(failsafe_count);
+    //Serial.println(failsafe_count);
     
     if(failsafe_count==MAX_FAILSAFE_COUNT){
         failsafe_count = 0;
